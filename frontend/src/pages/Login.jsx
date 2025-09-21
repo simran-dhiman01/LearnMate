@@ -6,11 +6,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger, } from "@/components/ui/tabs"
 import { useLoginUserMutation, useRegisterUserMutation } from "@/redux/api/authApi"
 import { Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 
 const Login = () => {
   const [signupInput, setSignupInput] = useState({ name: "", email: "", password: "" });
   const [loginInput, setLoginInput] = useState({ email: "", password: "" });
+  const navigate = useNavigate();
 
   const [registerUser, {
     data: registerData,
@@ -41,7 +43,7 @@ const Login = () => {
     const action = type === 'signup' ? registerUser : loginUser
     await action(inputData)
   }
-  
+
   useEffect(() => {
     if (registerIsSuccess && registerData) {
       toast.success(registerData.message || "Account created successfully")
@@ -51,19 +53,20 @@ const Login = () => {
     }
   }, [registerData, registerError, registerIsLoading])
 
-   useEffect(() => {
+  useEffect(() => {
     if (loginIsSuccess && loginData) {
       toast.success(loginData.message || "Welcome back to LearnMate")
+      navigate('/')
     }
     if (loginError) {
       toast.error(loginError.data?.message || "Login failed.")
     }
 
-  }, [loginData,loginError,loginIsLoading, ])
+  }, [loginData, loginError, loginIsLoading,])
 
 
   return (
-    
+
     <div className="flex items-center justify-center h-screen p-4">
       <div className="flex w-full max-w-sm flex-col gap-6">
         <Tabs defaultValue="signup"
